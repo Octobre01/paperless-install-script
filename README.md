@@ -5,10 +5,8 @@
 Ubuntu / Debian
 Root
 # 📦 Fonctionnalités
-# Installation complète
-# Redis auto config
-# OCR FR + EN
-# Services systemd
+
+Installation complète, Redis auto config, OCR FR + EN, Services systemd
 
 # 👤 Auteur : Adama Ballo
 
