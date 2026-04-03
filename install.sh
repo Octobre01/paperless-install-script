@@ -214,4 +214,8 @@ echo ""
 log_info "Création du compte administrateur Paperless"
 echo "Veuillez entrer les identifiants :"
 
-sudo -Hu ${PAPERLESS_USER} ${VENV_BIN}/python3 ${PAPERLESS_DIR}/src/manage.py createsuperuser
+DJANGO_SUPERUSER_USERNAME=admin \
+DJANGO_SUPERUSER_EMAIL=admin@localhost \
+DJANGO_SUPERUSER_PASSWORD=changeme123 \
+sudo -Hu ${PAPERLESS_USER} \
+  ${VENV_BIN}/python3 ${PAPERLESS_DIR}/src/manage.py createsuperuser --noinput
