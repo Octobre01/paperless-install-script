@@ -13,6 +13,12 @@ log_success() { echo -e "${GREEN}[OK]${NC} $1"; }
 log_warning() { echo -e "${YELLOW}[WARN]${NC} $1"; }
 log_error()   { echo -e "${RED}[ERREUR]${NC} $1"; exit 1; }
 
+# --- Détection environnement CI ---
+if [ -n "$CI" ]; then
+  log_warning "Mode CI détecté - désactivation des services systemd"
+  SKIP_SYSTEMD=true
+fi
+
 # --- Vérif root ---
 [ "$EUID" -ne 0 ] && log_error "Lance en root"
 
@@ -44,9 +50,13 @@ apt install -y -qq \
 
 # =============================================================================
 log_info "3/13 Redis"
-systemctl enable redis-server --quiet
-systemctl start redis-server
-redis-cli ping | grep -q PONG || log_error "Redis KO"
+if [ "$SKIP_SYSTEMD" != true ]; then
+  systemctl enable redis-server --quiet
+  systemctl start redis-server
+  redis-cli ping | grep -q PONG || log_error "Redis KO"
+else
+  log_warning "Redis non démarré (mode CI)"
+fi
 
 # =============================================================================
 log_info "4/13 User"
@@ -163,22 +173,33 @@ ExecStart=${VENV_BIN}/celery -A paperless beat --loglevel=INFO
 Restart=always
 EOF
 
-systemctl daemon-reload
+if [ "$SKIP_SYSTEMD" != true ]; then
+  systemctl daemon-reload
+else
+  log_warning "daemon-reload ignoré (mode CI)"
+fi
 
 # =============================================================================
 log_info "13/13 Start services"
 
 ALL_OK=true
 for s in paperless-webserver paperless-consumer paperless-taskqueue paperless-scheduler; do
- systemctl enable $s --quiet
- systemctl start $s
- sleep 1
- if systemctl is-active --quiet $s; then
-   log_success "$s OK"
+
+ if [ "$SKIP_SYSTEMD" != true ]; then
+   systemctl enable $s --quiet
+   systemctl start $s
+
+   sleep 1
+   if systemctl is-active --quiet $s; then
+     log_success "$s OK"
+   else
+     echo -e "${RED}[ERREUR]${NC} $s KO"
+     ALL_OK=false
+   fi
  else
-   echo -e "${RED}[ERREUR]${NC} $s KO"
-   ALL_OK=false
+   log_warning "$s ignoré (mode CI)"
  fi
+
 done
 
 # =============================================================================
