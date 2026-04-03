@@ -1,11 +1,5 @@
 # 📄 Paperless-ngx Auto Install Script
 
-Script d'installation automatique de Paperless-ngx (sans Docker)
-
-## 🚀 Installation rapide
-
-```bash
-curl -s https://raw.githubusercontent.com/Octobre01/paperless-install-script/main/install.sh
 
 ⚙️ Prérequis
 Ubuntu / Debian
@@ -15,6 +9,12 @@ Installation complète
 Redis auto config
 OCR FR + EN
 Services systemd
-👤 Auteur
+👤 Auteur : Adama Ballo
 
-Adama Ballo
+Script d'installation automatique de Paperless-ngx (sans Docker)
+
+## 🚀 Installation rapide
+
+```bash
+curl -s https://raw.githubusercontent.com/Octobre01/paperless-install-script/main/install.sh
+
