@@ -9,6 +9,8 @@ Root
 Installation complète, Redis auto config, OCR FR + EN, Services systemd
 
 # 👤 Auteur : Adama Ballo
+# Login : admin
+# Mot de passe : changeme123
 
 Script d'installation automatique de Paperless-ngx (sans Docker)
 
